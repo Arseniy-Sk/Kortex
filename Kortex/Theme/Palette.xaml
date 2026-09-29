@@ -1,0 +1,100 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ======================= ПАЛИТРА ======================= -->
+    <!-- Фоны -->
+    <Color x:Key="C.Base">#FF0B0D12</Color>
+    <Color x:Key="C.Surface">#FF12151D</Color>
+    <Color x:Key="C.SurfaceAlt">#FF171B25</Color>
+    <Color x:Key="C.Elevated">#FF1D2230</Color>
+    <Color x:Key="C.Hover">#FF242A39</Color>
+    <Color x:Key="C.Line">#FF262C3B</Color>
+    <Color x:Key="C.LineSoft">#FF1E2330</Color>
+
+    <!-- Текст -->
+    <Color x:Key="C.Text">#FFEAEEF7</Color>
+    <Color x:Key="C.TextDim">#FF9AA4B8</Color>
+    <Color x:Key="C.TextFaint">#FF5E6880</Color>
+
+    <!-- Акценты -->
+    <Color x:Key="C.Accent">#FF7C6BF7</Color>
+    <Color x:Key="C.AccentSoft">#FF9E8DFF</Color>
+    <Color x:Key="C.Cyan">#FF35D6E8</Color>
+    <Color x:Key="C.Green">#FF3DDC97</Color>
+    <Color x:Key="C.Amber">#FFF5B24A</Color>
+    <Color x:Key="C.Red">#FFFF6B6B</Color>
+
+    <SolidColorBrush x:Key="B.Base" Color="{StaticResource C.Base}"/>
+    <SolidColorBrush x:Key="B.Surface" Color="{StaticResource C.Surface}"/>
+    <SolidColorBrush x:Key="B.SurfaceAlt" Color="{StaticResource C.SurfaceAlt}"/>
+    <SolidColorBrush x:Key="B.Elevated" Color="{StaticResource C.Elevated}"/>
+    <SolidColorBrush x:Key="B.Hover" Color="{StaticResource C.Hover}"/>
+    <SolidColorBrush x:Key="B.Line" Color="{StaticResource C.Line}"/>
+    <SolidColorBrush x:Key="B.LineSoft" Color="{StaticResource C.LineSoft}"/>
+
+    <SolidColorBrush x:Key="B.Text" Color="{StaticResource C.Text}"/>
+    <SolidColorBrush x:Key="B.TextDim" Color="{StaticResource C.TextDim}"/>
+    <SolidColorBrush x:Key="B.TextFaint" Color="{StaticResource C.TextFaint}"/>
+
+    <SolidColorBrush x:Key="B.Accent" Color="{StaticResource C.Accent}"/>
+    <SolidColorBrush x:Key="B.AccentSoft" Color="{StaticResource C.AccentSoft}"/>
+    <SolidColorBrush x:Key="B.Cyan" Color="{StaticResource C.Cyan}"/>
+    <SolidColorBrush x:Key="B.Green" Color="{StaticResource C.Green}"/>
+    <SolidColorBrush x:Key="B.Amber" Color="{StaticResource C.Amber}"/>
+    <SolidColorBrush x:Key="B.Red" Color="{StaticResource C.Red}"/>
+
+    <SolidColorBrush x:Key="B.AccentDim" Color="#332F2A6B"/>
+    <SolidColorBrush x:Key="B.GreenDim" Color="#2632C97F"/>
+    <SolidColorBrush x:Key="B.RedDim" Color="#26FF6B6B"/>
+
+    <LinearGradientBrush x:Key="B.AccentGrad" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FF7C6BF7" Offset="0"/>
+        <GradientStop Color="#FFB06BF7" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="B.KeyDown" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FF8E7DFF" Offset="0"/>
+        <GradientStop Color="#FF6A57E8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="B.HeaderGlow" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#0D7C6BF7" Offset="0"/>
+        <GradientStop Color="#0035D6E8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ======================= ТИПОГРАФИКА ======================= -->
+    <FontFamily x:Key="F.Ui">Segoe UI Variable Display, Segoe UI, Inter, sans-serif</FontFamily>
+    <FontFamily x:Key="F.Mono">Cascadia Mono, Consolas, monospace</FontFamily>
+
+    <!-- Тени -->
+    <DropShadowEffect x:Key="FX.Soft" BlurRadius="24" ShadowDepth="6" Direction="270" Opacity="0.45" Color="#FF000000"/>
+    <DropShadowEffect x:Key="FX.KeyGlow" BlurRadius="18" ShadowDepth="0" Opacity="0.85" Color="#FF7C6BF7"/>
+
+    <!-- ======================= ФИРМЕННЫЙ ЗНАК KORTEX ======================= -->
+    <!-- Монограмма K: стойка и две диагонали, вписанные в квадрат 24×24 -->
+    <Geometry x:Key="Geo.K">M4,3 H7.6 V10.2 L14.6,3 H19.4 L11.2,11.4 L19.8,21 H15.1 L7.6,12.6 V21 H4 Z</Geometry>
+    <!-- Пульс: три дуги, расходящиеся от клавиши -->
+    <Geometry x:Key="Geo.Pulse">M12,17 A5,5 0 0 1 12,7 M12,20 A8,8 0 0 1 12,4</Geometry>
+
+    <LinearGradientBrush x:Key="B.Brand" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FF7C6BF7" Offset="0"/>
+        <GradientStop Color="#FF35D6E8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="B.BrandSoft" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#337C6BF7" Offset="0"/>
+        <GradientStop Color="#3335D6E8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <RadialGradientBrush x:Key="B.Glow" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+        <GradientStop Color="#557C6BF7" Offset="0"/>
+        <GradientStop Color="#0035D6E8" Offset="1"/>
+    </RadialGradientBrush>
+
+    <!-- Тепловая карта: от холодного к горячему -->
+    <LinearGradientBrush x:Key="B.Heat" StartPoint="0,1" EndPoint="0,0">
+        <GradientStop Color="#FFF5B24A" Offset="0"/>
+        <GradientStop Color="#FFFF6B6B" Offset="1"/>
+    </LinearGradientBrush>
+
+</ResourceDictionary>

@@ -1,0 +1,214 @@
+﻿<Window x:Class="Kortex.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:Kortex.Views"
+        xmlns:loc="clr-namespace:Kortex.Localization"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Kortex"
+        Width="1380" Height="920" MinWidth="1080" MinHeight="660"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Background="{StaticResource B.Base}"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Ideal">
+
+    <WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="50" ResizeBorderThickness="6"
+                            GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ==================== ЗАГОЛОВОК ==================== -->
+        <Border Grid.Row="0" Background="{StaticResource B.Surface}" BorderBrush="{StaticResource B.Line}"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Border Background="{StaticResource B.HeaderGlow}"/>
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,6,0"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button Style="{StaticResource Btn.Caption}" Content="&#xE921;" Click="Minimize_Click"/>
+                        <Button Style="{StaticResource Btn.Caption}" Content="&#xE922;" Click="Maximize_Click"/>
+                        <Button Style="{StaticResource Btn.Close}" Content="&#xE8BB;" Click="Close_Click"/>
+                    </StackPanel>
+
+                    <!-- Переключатель языка -->
+                    <Border DockPanel.Dock="Right" CornerRadius="9" Padding="3" Margin="0,0,14,0"
+                            VerticalAlignment="Center" Background="{StaticResource B.SurfaceAlt}"
+                            BorderBrush="{StaticResource B.Line}" BorderThickness="1"
+                            shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton Style="{StaticResource LangChip}" Content="RU"
+                                          IsChecked="{Binding IsRussian, Mode=OneWay}"
+                                          Command="{Binding SetLanguageCommand}" CommandParameter="ru"/>
+                            <ToggleButton Style="{StaticResource LangChip}" Content="EN"
+                                          IsChecked="{Binding IsEnglish, Mode=OneWay}"
+                                          Command="{Binding SetLanguageCommand}" CommandParameter="en"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Подключённая плата -->
+                    <Border DockPanel.Dock="Right" CornerRadius="9" Padding="10,5" Margin="0,0,10,0"
+                            VerticalAlignment="Center" Background="{StaticResource B.SurfaceAlt}"
+                            BorderBrush="{StaticResource B.Line}" BorderThickness="1"
+                            shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                            Cursor="Hand" MouseLeftButtonUp="DeviceChip_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="7" Height="7" VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse" BasedOn="{StaticResource LiveDot}">
+                                        <Setter Property="Fill" Value="{StaticResource B.TextFaint}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasBoard}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource B.Cyan}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Style="{StaticResource T.Dim}" FontSize="11.5" Margin="8,0,0,0"
+                                       Text="{Binding DeviceBadge}" MaxWidth="190" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Знак и название -->
+                    <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <Border Width="28" Height="28" CornerRadius="9" Background="{StaticResource B.Brand}">
+                            <Path Data="{StaticResource Geo.K}" Fill="White" Stretch="Uniform"
+                                  Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.Base}" FontSize="15" FontWeight="Bold"
+                                   Margin="11,0,0,0" VerticalAlignment="Center" Text="Kortex"/>
+                        <Border CornerRadius="6" Padding="8,2" Margin="11,0,0,0" Background="{StaticResource B.BrandSoft}">
+                            <TextBlock Style="{StaticResource T.Caption}" Foreground="{StaticResource B.AccentSoft}"
+                                       Text="{loc:Tr App.Tagline}"/>
+                        </Border>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== ТЕЛО ==================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="242"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Боковая навигация -->
+            <Border Grid.Column="0" Background="{StaticResource B.Surface}" BorderBrush="{StaticResource B.Line}"
+                    BorderThickness="0,0,1,0">
+                <Grid Margin="14,16,14,14">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Nav.Sections}" Margin="13,0,0,8"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE80F;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Welcome}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=0}"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE765;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Tester}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=1}"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE8AB;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Remap}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=3}"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE81E;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Macro}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=4}"/>
+
+                        <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Nav.Board}" Margin="13,18,0,8"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE9CE;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Keymap}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=2}"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE88E;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Device}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=5}"/>
+                        <RadioButton Style="{StaticResource NavItem}" Tag="&#xE713;" GroupName="nav"
+                                     Content="{loc:Tr Nav.Settings}"
+                                     IsChecked="{Binding Page, Converter={StaticResource EqualsBool}, ConverterParameter=6}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <Border Background="{StaticResource B.SurfaceAlt}" BorderBrush="{StaticResource B.Line}"
+                                BorderThickness="1" CornerRadius="12" Padding="12,10">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                                             Fill="{StaticResource B.Green}" Style="{StaticResource LiveDot}"/>
+                                    <TextBlock Style="{StaticResource T.Body}" FontSize="12" FontWeight="SemiBold"
+                                               Margin="8,0,0,0" Text="{loc:Tr Common.Hook}"/>
+                                </StackPanel>
+                                <TextBlock Style="{StaticResource T.Caption}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                           Text="{Binding Remap.RulesSummary}"/>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.Caption}" Margin="13,12,0,0" Text="{loc:Tr App.Version}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Контент -->
+            <Grid Grid.Column="1" Margin="26,20,26,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,18"
+                            Visibility="{Binding ShowPageHeader, Converter={StaticResource BoolVis}}">
+                    <TextBlock Style="{StaticResource T.H1}" Text="{Binding PageTitle}"/>
+                    <TextBlock Style="{StaticResource T.Dim}" Margin="0,3,0,0" Text="{Binding PageSubtitle}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1">
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsWelcomePage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:WelcomeView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsTesterPage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:TesterView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsKeymapPage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:KeymapView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsRemapPage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:RemapView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsMacroPage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:MacroView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsDevicePage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:DeviceView/>
+                    </ContentControl>
+                    <ContentControl Style="{StaticResource PageHost}"
+                                    Visibility="{Binding IsSettingsPage, Converter={StaticResource BoolVis}}">
+                        <ContentControl.RenderTransform><TranslateTransform/></ContentControl.RenderTransform>
+                        <views:SettingsView/>
+                    </ContentControl>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

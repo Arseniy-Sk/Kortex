@@ -1,0 +1,360 @@
+﻿<UserControl x:Class="Kortex.Views.MacroView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:Kortex.Models"
+             xmlns:loc="clr-namespace:Kortex.Localization"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= Список макросов ================= -->
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0" Padding="16,14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Padding="11,6"
+                            Command="{Binding Macros.NewCommand}" ToolTip="{loc:Tr Macro.New}">
+                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    </Button>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Ghost}" Padding="11,6" Margin="0,0,8,0"
+                            Command="{Binding Macros.PresetsCommand}" ToolTip="{loc:Tr Macro.PresetsHint}"
+                            Content="{loc:Tr Macro.Presets}" FontSize="11.5"/>
+                    <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Library}" VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <ListBox Grid.Row="1" Style="{StaticResource List}" Margin="0,12,0,0"
+                         ItemContainerStyle="{StaticResource ListItem}"
+                         ItemsSource="{Binding Macros.Macros}"
+                         SelectedItem="{Binding Macros.Selected}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource T.Body}" FontWeight="SemiBold"
+                                           Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Style="{StaticResource T.Caption}" Margin="0,2,0,0" Text="{Binding Summary}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Grid.Row="1" Style="{StaticResource T.Dim}" TextWrapping="Wrap" TextAlignment="Center"
+                           VerticalAlignment="Center" Margin="8"
+                           Text="{loc:Tr Macro.Empty}"
+                           Visibility="{Binding Macros.Macros.Count, Converter={StaticResource CountVis}, ConverterParameter=inv}"/>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,0">
+                    <Button Style="{StaticResource Btn.Ghost}" Padding="11,6" Content="{loc:Tr Macro.Duplicate}"
+                            Command="{Binding Macros.DuplicateCommand}"/>
+                    <Button Style="{StaticResource Btn.Danger}" Padding="11,6" Margin="8,0,0,0" Content="{loc:Tr Macro.Delete}"
+                            Command="{Binding Macros.DeleteCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ================= Редактор ================= -->
+        <Grid Grid.Column="1">
+            <TextBlock Style="{StaticResource T.Dim}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       TextAlignment="Center" TextWrapping="Wrap" MaxWidth="360"
+                       Text="Выберите макрос слева или создайте новый. Макрос можно повесить на любую клавишу во вкладке «Переназначение»."
+                       Visibility="{Binding Macros.HasSelection, Converter={StaticResource BoolVis}, ConverterParameter=inv}"/>
+
+            <Grid Visibility="{Binding Macros.HasSelection, Converter={StaticResource BoolVis}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Шапка -->
+                <Border Style="{StaticResource Card}" Padding="18,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Name}" Margin="0,0,0,5"/>
+                            <TextBox Style="{StaticResource Input}" FontWeight="SemiBold"
+                                     Text="{Binding Macros.Selected.Name, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Width="96" Margin="0,0,12,0">
+                            <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Repeat}" Margin="0,0,0,5"/>
+                            <TextBox Style="{StaticResource Input}" Text="{Binding Macros.Selected.Repeat, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Width="96">
+                            <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Speed}" Margin="0,0,0,5"/>
+                            <TextBox Style="{StaticResource Input}" Text="{Binding Macros.Selected.Speed, UpdateSourceTrigger=LostFocus, StringFormat={}{0:0.0}}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Панель записи -->
+                <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="18,14">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Border CornerRadius="9" Padding="10,6" Margin="0,0,8,0"
+                                    Background="{StaticResource B.SurfaceAlt}" BorderBrush="{StaticResource B.Line}"
+                                    BorderThickness="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="{loc:Tr Macro.Delays}" VerticalAlignment="Center"/>
+                                    <ToggleButton Style="{StaticResource Switch}" Width="34" Height="19" Margin="8,0,0,0"
+                                                  IsChecked="{Binding Macros.CaptureDelays}"/>
+                                </StackPanel>
+                            </Border>
+                            <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Tr Macro.Compact}" Margin="0,0,8,0"
+                                    ToolTip="{loc:Tr Macro.CompactHint}"
+                                    Command="{Binding Macros.CompactCommand}"/>
+                            <Button Style="{StaticResource Btn.Ghost}" Margin="0,0,8,0"
+                                    Command="{Binding Macros.PlayCommand}" ToolTip="{loc:Tr Macro.Play}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{loc:Tr Macro.Play}" Margin="7,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="RecordButton" Command="{Binding Macros.RecordCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Btn.Primary}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Macros.IsRecording}" Value="True">
+                                                <Setter Property="Background" Value="#FFE04F5F"/>
+                                                <Setter Property="BorderBrush" Value="#FFFF8A94"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="9" Height="9" Fill="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Macros.RecordButtonText}" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <TextBlock Style="{StaticResource T.Dim}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                   Margin="0,0,16,0" Text="{Binding Macros.RecordHint}"/>
+                    </DockPanel>
+                </Border>
+
+                <!-- Шаги -->
+                <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="18,14">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Style="{StaticResource T.Caption}"
+                                       Text="{Binding Macros.Selected.Summary}"/>
+                            <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Sequence}"/>
+                        </DockPanel>
+
+                        <TextBlock Grid.Row="1" Style="{StaticResource T.Dim}" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Text="{loc:Tr Macro.NoSteps}"
+                                   Visibility="{Binding Macros.Selected.Steps.Count, Converter={StaticResource CountVis}, ConverterParameter=inv}"/>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                            <ItemsControl ItemsSource="{Binding Macros.Selected.Steps}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:MacroStep}">
+                                        <Border x:Name="Row" Background="{StaticResource B.SurfaceAlt}"
+                                                BorderBrush="{StaticResource B.LineSoft}" BorderThickness="1"
+                                                CornerRadius="10" Padding="10,7" Margin="0,0,0,5">
+                                            <DockPanel>
+                                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                                    <Button Style="{StaticResource Btn.Caption}" Width="26" Height="26" Content="&#xE70E;"
+                                                            ToolTip="{loc:Tr Macro.Up}"
+                                                            Command="{Binding DataContext.Macros.MoveUpCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    <Button Style="{StaticResource Btn.Caption}" Width="26" Height="26" Content="&#xE70D;"
+                                                            ToolTip="{loc:Tr Macro.Down}"
+                                                            Command="{Binding DataContext.Macros.MoveDownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    <Button Style="{StaticResource Btn.Caption}" Width="26" Height="26" Content="&#xE711;"
+                                                            ToolTip="{loc:Tr Macro.Remove}"
+                                                            Command="{Binding DataContext.Macros.RemoveStepCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                </StackPanel>
+
+                                                <Border DockPanel.Dock="Left" Width="26" Height="26" CornerRadius="8"
+                                                        Background="#FF1D2230" Margin="0,0,10,0">
+                                                    <TextBlock x:Name="Glyph" Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="11" Foreground="{StaticResource B.TextDim}"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock x:Name="Text" Style="{StaticResource T.Body}" Text="{Binding Display}"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <StackPanel x:Name="DelayEdit" Orientation="Horizontal" Visibility="Collapsed">
+                                                        <TextBlock Style="{StaticResource T.Body}" Text="{loc:Tr Macro.AddDelay}" VerticalAlignment="Center"/>
+                                                        <TextBox Style="{StaticResource Input}" Width="72" Padding="8,4" Margin="10,0,0,0"
+                                                                 Text="{Binding DelayMs, UpdateSourceTrigger=LostFocus}"/>
+                                                        <TextBlock Style="{StaticResource T.Dim}" Text="{loc:Tr Macro.Ms}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DockPanel>
+                                        </Border>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Kind}" Value="Delay">
+                                                <Setter TargetName="Text" Property="Visibility" Value="Collapsed"/>
+                                                <Setter TargetName="DelayEdit" Property="Visibility" Value="Visible"/>
+                                                <Setter TargetName="Row" Property="Background" Value="#FF14181F"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Kind}" Value="Tap">
+                                                <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource B.AccentSoft}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Kind}" Value="Text">
+                                                <Setter TargetName="Glyph" Property="Foreground" Value="{StaticResource B.Cyan}"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!-- Конструктор шагов -->
+                <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="18,14">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="170"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.StepKind}" Margin="0,0,0,5"/>
+                                <ComboBox Style="{StaticResource Combo}" ItemsSource="{Binding Macros.StepKinds}"
+                                          SelectedItem="{Binding Macros.NewStepKind}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Grid Grid.Column="1" VerticalAlignment="Bottom">
+                                <!-- Клавиша -->
+                                <ComboBox Style="{StaticResource Combo}" ItemsSource="{Binding Macros.Keys}"
+                                          SelectedItem="{Binding Macros.NewKey}" DisplayMemberPath="Name"
+                                          Visibility="{Binding Macros.IsKeyStep, Converter={StaticResource BoolVis}}"/>
+
+                                <!-- Пауза -->
+                                <StackPanel Orientation="Horizontal"
+                                            Visibility="{Binding Macros.IsDelayStep, Converter={StaticResource BoolVis}}">
+                                    <TextBox Style="{StaticResource Input}" Width="110"
+                                             Text="{Binding Macros.NewDelay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="{loc:Tr Macro.Ms}"
+                                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                </StackPanel>
+
+                                <!-- Текст, буфер обмена, дата -->
+                                <TextBox Style="{StaticResource Input}"
+                                         Text="{Binding Macros.NewText, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding Macros.IsTextStep, Converter={StaticResource BoolVis}}"/>
+
+                                <!-- Запуск программы -->
+                                <Grid Visibility="{Binding Macros.IsLaunchStep, Converter={StaticResource BoolVis}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="160"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource Input}"
+                                             ToolTip="{loc:Tr Macro.Path}"
+                                             Text="{Binding Macros.NewText, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button Grid.Column="1" Style="{StaticResource Btn.Ghost}" Margin="8,0,8,0"
+                                            Padding="12,8" Content="{loc:Tr Macro.Browse}"
+                                            Command="{Binding Macros.BrowseCommand}"/>
+                                    <TextBox Grid.Column="2" Style="{StaticResource Input}"
+                                             ToolTip="{loc:Tr Macro.Args}"
+                                             Text="{Binding Macros.NewArg, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Grid>
+
+                                <!-- Клик мышью -->
+                                <StackPanel Orientation="Horizontal"
+                                            Visibility="{Binding Macros.IsClickStep, Converter={StaticResource BoolVis}}">
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="{loc:Tr Macro.Button}"
+                                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <ComboBox Style="{StaticResource Combo}" Width="170"
+                                              SelectedIndex="{Binding Macros.NewButton}">
+                                        <ComboBoxItem Content="{loc:Tr Mouse.Left}"/>
+                                        <ComboBoxItem Content="{loc:Tr Mouse.Right}"/>
+                                        <ComboBoxItem Content="{loc:Tr Mouse.Middle}"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Перемещение курсора -->
+                                <StackPanel Orientation="Horizontal"
+                                            Visibility="{Binding Macros.IsMoveStep, Converter={StaticResource BoolVis}}">
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="X" VerticalAlignment="Center"/>
+                                    <TextBox Style="{StaticResource Input}" Width="90" Margin="8,0,0,0"
+                                             Text="{Binding Macros.NewX, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="Y" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                                    <TextBox Style="{StaticResource Input}" Width="90" Margin="8,0,0,0"
+                                             Text="{Binding Macros.NewY, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ToggleButton Style="{StaticResource Switch}" Width="34" Height="19" Margin="16,0,0,0"
+                                                  VerticalAlignment="Center" IsChecked="{Binding Macros.NewAbsolute}"/>
+                                    <TextBlock Style="{StaticResource T.Dim}" Text="{loc:Tr Macro.Absolute}"
+                                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                </StackPanel>
+
+                                <!-- Прокрутка -->
+                                <StackPanel Orientation="Horizontal"
+                                            Visibility="{Binding Macros.IsScrollStep, Converter={StaticResource BoolVis}}">
+                                    <TextBox Style="{StaticResource Input}" Width="110"
+                                             Text="{Binding Macros.NewAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Style="{StaticResource T.Dim}" VerticalAlignment="Center" Margin="10,0,0,0"
+                                               Text="{loc:Tr Macro.Step.Scroll}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Button Grid.Column="2" Style="{StaticResource Btn}" Margin="14,0,0,0" Padding="16,8"
+                                    VerticalAlignment="Bottom" Content="{loc:Tr Macro.AddStep}"
+                                    Command="{Binding Macros.AddStepCommand}"/>
+                        </Grid>
+
+                        <!-- Запись макросов в память платы -->
+                        <Border Background="{StaticResource B.SurfaceAlt}" CornerRadius="11" Padding="13,10" Margin="0,14,0,0">
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                    <Button Style="{StaticResource Btn.Ghost}" Padding="12,7" Margin="0,0,8,0"
+                                            Content="{loc:Tr Macro.Firmware.Read}"
+                                            Command="{Binding Macros.ReadFromBoardCommand}"/>
+                                    <Button Style="{StaticResource Btn.Primary}" Padding="12,7"
+                                            Content="{loc:Tr Macro.Firmware.Write}"
+                                            Command="{Binding Macros.WriteToBoardCommand}"/>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,14,0">
+                                    <TextBlock Style="{StaticResource T.Caption}" Text="{loc:Tr Macro.Firmware}"/>
+                                    <TextBlock Style="{StaticResource T.Dim}" FontSize="11.5" TextWrapping="Wrap"
+                                               Text="{loc:Tr Macro.Firmware.Hint}"
+                                               Visibility="{Binding Macros.HasFirmwareStatus, Converter={StaticResource BoolVis}, ConverterParameter=inv}"/>
+                                    <TextBlock Style="{StaticResource T.Body}" FontSize="12" TextWrapping="Wrap"
+                                               Foreground="{StaticResource B.AccentSoft}"
+                                               Text="{Binding Macros.FirmwareStatus}"
+                                               Visibility="{Binding Macros.HasFirmwareStatus, Converter={StaticResource BoolVis}}"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

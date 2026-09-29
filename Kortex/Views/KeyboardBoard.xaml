@@ -1,0 +1,195 @@
+<UserControl x:Class="Kortex.Views.KeyboardBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Kortex.ViewModels"
+             mc:Ignorable="d"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    <UserControl.Resources>
+
+        <!-- ===================== КОЛПАЧОК ===================== -->
+        <DataTemplate x:Key="KeyCapTemplate" DataType="{x:Type vm:KeyCapVm}">
+            <Grid Width="{Binding Width}" Height="{Binding Height}">
+
+                <!-- Волна нажатия (Kortex Pulse) -->
+                <Border x:Name="Ripple" CornerRadius="10" Background="{StaticResource B.Glow}"
+                        Opacity="0" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Border.RenderTransform>
+                </Border>
+
+                <Border x:Name="Shell" CornerRadius="8"
+                        Background="#FF1A1F2C" BorderBrush="#FF2A3044" BorderThickness="1"
+                        ToolTip="{Binding Tooltip}" RenderTransformOrigin="0.5,0.6">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Border.RenderTransform>
+                    <Grid Margin="3,2">
+                        <!-- Тепловая карта износа -->
+                        <Border x:Name="Heat" CornerRadius="7" Background="{StaticResource B.Heat}"
+                                Margin="-3,-2" Opacity="{Binding Heat}"/>
+
+                        <!-- Верхний блик -->
+                        <Border x:Name="Gloss" CornerRadius="7,7,3,3" VerticalAlignment="Top" Height="12"
+                                Margin="-2,-1,-2,0" Opacity="0.35">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#18FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock x:Name="Sub" Text="{Binding Sub}" FontSize="9.5" FontWeight="SemiBold"
+                                       Foreground="#FF6C7488" HorizontalAlignment="Center"
+                                       Visibility="Collapsed"/>
+                            <TextBlock x:Name="Legend" Text="{Binding DisplayLabel}" FontSize="11.5" FontWeight="SemiBold"
+                                       Foreground="#FFC9D2E4" HorizontalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+
+                        <TextBlock x:Name="Count" Text="{Binding PressCountText}" FontSize="8.5"
+                                   Foreground="#FF4E5870" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                   Margin="0,0,1,0"/>
+
+                        <Border x:Name="MapPill" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                Background="#442F2A6B" CornerRadius="4" Padding="3,0" Margin="0,0,1,1"
+                                Visibility="Collapsed" MaxWidth="60">
+                            <TextBlock Text="{Binding Mapping}" FontSize="8.5" FontWeight="SemiBold"
+                                       Foreground="#FFA694FF" TextTrimming="CharacterEllipsis"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding ShowSub}" Value="True">
+                    <Setter TargetName="Sub" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDimmed}" Value="True">
+                    <Setter TargetName="Shell" Property="Opacity" Value="0.4"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMapped}" Value="True">
+                    <Setter TargetName="MapPill" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="Count" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FF574BA8"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsTested}" Value="True">
+                    <Setter TargetName="Shell" Property="Background" Value="#FF16241F"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FF2E6B52"/>
+                    <Setter TargetName="Legend" Property="Foreground" Value="#FF8FE8C0"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasChatter}" Value="True">
+                    <Setter TargetName="Shell" Property="Background" Value="#FF2A1720"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FFB5495C"/>
+                    <Setter TargetName="Legend" Property="Foreground" Value="#FFFFA8A8"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FF9E8DFF"/>
+                    <Setter TargetName="Shell" Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+
+                <!-- Нажатие: подсветка, лёгкое проседание колпачка -->
+                <DataTrigger Binding="{Binding IsDown}" Value="True">
+                    <Setter TargetName="Shell" Property="Background" Value="{StaticResource B.KeyDown}"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FFB4A6FF"/>
+                    <Setter TargetName="Legend" Property="Foreground" Value="White"/>
+                    <Setter TargetName="Sub" Property="Foreground" Value="#FFE7E2FF"/>
+                    <Setter TargetName="Shell" Property="Effect" Value="{StaticResource FX.KeyGlow}"/>
+                    <Setter TargetName="Gloss" Property="Opacity" Value="0.7"/>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Shell"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="0.94" Duration="0:0:0.05"/>
+                                <DoubleAnimation Storyboard.TargetName="Shell"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="0.97" Duration="0:0:0.05"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Shell"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1" Duration="0:0:0.14">
+                                    <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude="0.5"/></DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="Shell"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1" Duration="0:0:0.14"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+
+                <!-- Волна расходится только когда включена фирменная анимация -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDown}" Value="True"/>
+                        <Condition Binding="{Binding PulseEnabled}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Ripple" Storyboard.TargetProperty="Opacity"
+                                                 From="0.9" To="0" Duration="0:0:0.55"/>
+                                <DoubleAnimation Storyboard.TargetName="Ripple"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                 From="1" To="2.6" Duration="0:0:0.55">
+                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="Ripple"
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                 From="1" To="2.6" Duration="0:0:0.55">
+                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                </MultiDataTrigger>
+
+                <DataTrigger Binding="{Binding IsFirmware}" Value="True">
+                    <Setter TargetName="Shell" Property="Background" Value="#FF15181F"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FF2A3044"/>
+                    <Setter TargetName="Legend" Property="Foreground" Value="#FF5E6880"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsBlocker}" Value="True">
+                    <Setter TargetName="Shell" Property="Background" Value="#FF0E1118"/>
+                    <Setter TargetName="Shell" Property="BorderBrush" Value="#FF1C2130"/>
+                    <Setter TargetName="Gloss" Property="Opacity" Value="0"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Viewbox Stretch="Uniform" StretchDirection="Both">
+        <Border Padding="14,14,10,10" CornerRadius="18" Background="#FF0F131B"
+                BorderBrush="#FF232939" BorderThickness="1">
+            <ItemsControl x:Name="Host"
+                          ItemsSource="{Binding Board.Keys, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Width="{Binding Board.BoardWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Height="{Binding Board.BoardHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          ItemTemplate="{StaticResource KeyCapTemplate}"
+                          PreviewMouseLeftButtonDown="Host_MouseDown">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </Border>
+    </Viewbox>
+</UserControl>

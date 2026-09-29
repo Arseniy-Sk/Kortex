@@ -1,0 +1,319 @@
+﻿<UserControl x:Class="Kortex.Views.WelcomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Kortex.Localization"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="Feature" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Padding" Value="18,16"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="1140" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ============ Герой ============ -->
+            <Border Grid.Row="0" CornerRadius="20" Padding="36,32" Background="{StaticResource B.Surface}"
+                    BorderBrush="{StaticResource B.Line}" BorderThickness="1">
+                <Grid>
+                    <!-- Фирменное свечение в углу -->
+                    <Canvas ClipToBounds="True" IsHitTestVisible="False">
+                        <Ellipse Width="340" Height="340" Canvas.Right="-70" Canvas.Top="-70"
+                                 Fill="{StaticResource B.Glow}"/>
+                    </Canvas>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Знак -->
+                        <Grid Grid.Column="0" Width="108" Height="108" VerticalAlignment="Top" Margin="0,4,28,0">
+                            <Canvas IsHitTestVisible="False">
+                                <Ellipse Fill="{StaticResource B.Glow}" Width="190" Height="190"
+                                         Canvas.Left="-41" Canvas.Top="-41"/>
+                            </Canvas>
+                            <Border CornerRadius="28" Background="{StaticResource B.Brand}"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Border.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                </Border.RenderTransform>
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard Storyboard="{StaticResource SB.Breath}"/>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                                <Path Data="{StaticResource Geo.K}" Fill="White" Stretch="Uniform"
+                                      Width="52" Height="52" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource T.Base}" FontSize="34" FontWeight="Bold"
+                                       Text="{loc:Tr Welcome.Greeting}"/>
+                            <TextBlock Style="{StaticResource T.Dim}" Margin="0,10,0,0" TextWrapping="Wrap"
+                                       FontSize="13.5" LineHeight="22" MaxWidth="720" HorizontalAlignment="Left"
+                                       Text="{loc:Tr Welcome.Lead}"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,22,0,0">
+                                <Button Style="{StaticResource Btn.Primary}" Padding="20,11"
+                                        Command="{Binding StartCommand}" Content="{loc:Tr Welcome.Start}"/>
+                                <Button Style="{StaticResource Btn.Ghost}" Padding="18,11" Margin="10,0,0,0"
+                                        Command="{Binding GoCommand}" CommandParameter="5"
+                                        Content="{loc:Tr Device.Rescan}"/>
+                                <Button Style="{StaticResource Btn.Ghost}" Padding="18,11" Margin="10,0,0,0"
+                                        Command="{Binding GoCommand}" CommandParameter="2"
+                                        Content="{loc:Tr Nav.Keymap}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                <ToggleButton Style="{StaticResource Switch}" Width="34" Height="19"
+                                              IsChecked="{Binding ShowWelcomeAtStart}"/>
+                                <TextBlock Style="{StaticResource T.Dim}" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           FontSize="12" Text="{loc:Tr Settings.ShowWelcome}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <TextBlock Grid.Row="1" Style="{StaticResource T.Caption}" Margin="4,24,0,10"
+                       Text="{loc:Tr Welcome.Features}"/>
+
+            <!-- ============ Возможности ============ -->
+            <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,10">
+                <Border Style="{StaticResource Feature}" Margin="0,0,12,0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.05" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="24" To="0" BeginTime="0:0:0.05" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <StackPanel>
+                        <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource B.BrandSoft}"
+                                HorizontalAlignment="Left">
+                            <TextBlock Text="&#xE88E;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{StaticResource B.AccentSoft}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.H2}" Margin="0,14,0,0" TextWrapping="Wrap"
+                                   Text="{loc:Tr Feature.Detect.Title}"/>
+                        <TextBlock Style="{StaticResource T.Dim}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   FontSize="12" LineHeight="18" Text="{loc:Tr Feature.Detect.Text}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Feature}" Margin="0,0,12,0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.13" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="24" To="0" BeginTime="0:0:0.13" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <StackPanel>
+                        <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource B.BrandSoft}"
+                                HorizontalAlignment="Left">
+                            <TextBlock Text="&#xE9CE;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{StaticResource B.Cyan}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.H2}" Margin="0,14,0,0" TextWrapping="Wrap"
+                                   Text="{loc:Tr Feature.Firmware.Title}"/>
+                        <TextBlock Style="{StaticResource T.Dim}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   FontSize="12" LineHeight="18" Text="{loc:Tr Feature.Firmware.Text}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Feature}" Margin="0,0,12,0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.21" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="24" To="0" BeginTime="0:0:0.21" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <StackPanel>
+                        <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource B.BrandSoft}"
+                                HorizontalAlignment="Left">
+                            <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{StaticResource B.AccentSoft}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.H2}" Margin="0,14,0,0" TextWrapping="Wrap"
+                                   Text="{loc:Tr Feature.Dual.Title}"/>
+                        <TextBlock Style="{StaticResource T.Dim}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   FontSize="12" LineHeight="18" Text="{loc:Tr Feature.Dual.Text}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Feature}">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.29" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="24" To="0" BeginTime="0:0:0.29" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <StackPanel>
+                        <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource B.BrandSoft}"
+                                HorizontalAlignment="Left">
+                            <TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{StaticResource B.Green}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Style="{StaticResource T.H2}" Margin="0,14,0,0" TextWrapping="Wrap"
+                                   Text="{loc:Tr Feature.Health.Title}"/>
+                        <TextBlock Style="{StaticResource T.Dim}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   FontSize="12" LineHeight="18" Text="{loc:Tr Feature.Health.Text}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <TextBlock Grid.Row="3" Style="{StaticResource T.Caption}" Margin="4,14,0,10"
+                       Text="{loc:Tr Welcome.Steps}"/>
+
+            <UniformGrid Grid.Row="4" Columns="3">
+                <Border Style="{StaticResource Feature}" Margin="0,0,12,0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.37" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="20" To="0" BeginTime="0:0:0.37" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="30" Height="30" CornerRadius="10"
+                                Background="{StaticResource B.Brand}" VerticalAlignment="Top">
+                            <TextBlock Text="1" FontWeight="Bold" FontSize="13" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                            <TextBlock Style="{StaticResource T.H2}" FontSize="14" TextWrapping="Wrap" Text="{loc:Tr Welcome.Step1}"/>
+                            <TextBlock Style="{StaticResource T.Dim}" Margin="0,5,0,0" TextWrapping="Wrap"
+                                       FontSize="12" LineHeight="18" Text="{loc:Tr Welcome.Step1.Text}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource Feature}" Margin="0,0,12,0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.45" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="20" To="0" BeginTime="0:0:0.45" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="30" Height="30" CornerRadius="10"
+                                Background="{StaticResource B.Brand}" VerticalAlignment="Top">
+                            <TextBlock Text="2" FontWeight="Bold" FontSize="13" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                            <TextBlock Style="{StaticResource T.H2}" FontSize="14" TextWrapping="Wrap" Text="{loc:Tr Welcome.Step2}"/>
+                            <TextBlock Style="{StaticResource T.Dim}" Margin="0,5,0,0" TextWrapping="Wrap"
+                                       FontSize="12" LineHeight="18" Text="{loc:Tr Welcome.Step2.Text}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource Feature}" Margin="0">
+                    <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.53" Duration="0:0:0.4"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                     From="20" To="0" BeginTime="0:0:0.53" Duration="0:0:0.45">
+                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="30" Height="30" CornerRadius="10"
+                                Background="{StaticResource B.Brand}" VerticalAlignment="Top">
+                            <TextBlock Text="3" FontWeight="Bold" FontSize="13" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                            <TextBlock Style="{StaticResource T.H2}" FontSize="14" TextWrapping="Wrap" Text="{loc:Tr Welcome.Step3}"/>
+                            <TextBlock Style="{StaticResource T.Dim}" Margin="0,5,0,0" TextWrapping="Wrap"
+                                       FontSize="12" LineHeight="18" Text="{loc:Tr Welcome.Step3.Text}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

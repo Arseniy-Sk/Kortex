@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Kortex.ViewModels">
+
+    <!-- Конвертеры живут в словаре темы: так они доступны и из шаблонов элементов,
+         которые не видят ключи, объявленные прямо в App.xaml. -->
+    <vm:NotEmptyToVisibility x:Key="NotEmptyVis"/>
+    <vm:BoolToVisibility x:Key="BoolVis"/>
+    <vm:NullToVisibility x:Key="NullVis"/>
+    <vm:RatioToStar x:Key="RatioStar"/>
+    <vm:RatioToPercent x:Key="RatioPercent"/>
+    <vm:EqualsToBool x:Key="EqualsBool"/>
+    <vm:CountToVisibility x:Key="CountVis"/>
+
+</ResourceDictionary>
